@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#080e1d">
+  <title>JARVIS Lite</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <style>
+    :root{color-scheme:dark;--bg:#070b16;--panel:#10182b;--line:#233354;--text:#edf4ff;--muted:#9cacc8;--blue:#68c9ff;--cyan:#8bf3e2}
+    *{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at top,#15294b 0,#080e1d 48%,#050812 100%);color:var(--text);font:16px/1.45 system-ui,-apple-system,Segoe UI,sans-serif;min-height:100vh}
+    .wrap{max-width:950px;margin:auto;padding:22px 16px 40px}.top{display:flex;align-items:center;gap:14px;margin-bottom:22px}
+    .orb{width:58px;height:58px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#e7ffff,#68c9ff 18%,#245b9b 48%,#0b1730 70%);box-shadow:0 0 30px #3baaff55;flex:none}
+    h1{font-size:clamp(25px,5vw,38px);margin:0;letter-spacing:.12em} .sub{color:var(--muted);font-size:14px}
+    .grid{display:grid;grid-template-columns:1.3fr .7fr;gap:16px}.panel{background:#0f1729dd;border:1px solid var(--line);border-radius:20px;padding:18px;box-shadow:0 12px 40px #0002}
+    h2{font-size:17px;margin:0 0 12px}button,input,textarea{font:inherit}button{background:#193353;color:var(--text);border:1px solid #31547d;border-radius:12px;padding:11px 14px;cursor:pointer}button:hover{border-color:var(--blue)}button.primary{background:linear-gradient(110deg,#1b6c9a,#2454a2);border:0}button:disabled{opacity:.45;cursor:not-allowed}
+    .row{display:flex;gap:8px;flex-wrap:wrap}.status{font-size:13px;color:var(--cyan);margin:10px 0}.chat{height:290px;overflow:auto;background:#080e1b;border:1px solid #1b2945;border-radius:14px;padding:12px;margin-bottom:12px}
+    .msg{padding:10px 12px;border-radius:12px;margin:8px 0;max-width:92%;white-space:pre-wrap;overflow-wrap:anywhere}.bot{background:#142540;border:1px solid #253b60}.user{background:#183c50;margin-left:auto;border:1px solid #236078}
+    .compose{display:flex;gap:8px}.compose input{min-width:0;flex:1;background:#080e1b;color:var(--text);border:1px solid #2a3b5a;border-radius:12px;padding:12px}
+    .task{padding:11px;border:1px solid #263a5d;border-radius:12px;margin:8px 0;background:#0a1222}.task strong{display:block}.task small{color:var(--muted)}.memory{display:flex;gap:9px;align-items:flex-start;color:var(--muted);font-size:13px;margin-top:12px}
+    .notice{color:var(--muted);font-size:13px;margin-top:12px}.pill{display:inline-block;color:var(--cyan);border:1px solid #2a786f;border-radius:99px;padding:3px 9px;font-size:12px}
+    @media(max-width:720px){.grid{grid-template-columns:1fr}.wrap{padding:16px 12px 30px}.chat{height:250px}.panel{padding:15px}}
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="orb" aria-hidden="true"></div>
+    <div><h1>JARVIS LITE</h1><div class="sub">Личный ИИ-прототип · Android + Windows</div></div>
+  </header>
+  <div class="grid">
+    <section class="panel">
+      <h2>Диалог <span class="pill">локальный прототип</span></h2>
+      <div id="chat" class="chat" aria-live="polite">
+        <div class="msg bot">Привет. Я JARVIS Lite. Могу вести диалог, озвучивать ответы и выполнять несколько безопасных демонстрационных команд. Настоящий ИИ и управление другими приложениями пока не подключены.</div>
+      </div>
+      <form id="chatForm" class="compose">
+        <input id="prompt" autocomplete="off" placeholder="Напиши команду..." aria-label="Сообщение">
+        <button class="primary" type="submit">Отправить</button>
+      </form>
+      <div class="row" style="margin-top:10px">
+        <button id="micBtn">🎙️ Голосовой ввод</button>
+        <button id="speakToggle" aria-pressed="true">🔊 Озвучка: вкл.</button>
+        <button id="clearChat">Очистить чат</button>
+      </div>
+      <div id="voiceStatus" class="status">Голос готов, если браузер поддерживает распознавание речи.</div>
+    </section>
+    <aside class="panel">
+      <h2>Разрешённые действия</h2>
+      <div class="task"><strong>🕒 Показать время</strong><small>Команда: «который час»</small></div>
+      <div class="task"><strong>📝 Черновик заметки</strong><small>Команда: «создай заметку …»</small></div>
+      <div class="task"><strong>🌐 Открыть сайт</strong><small>Команда: «открой YouTube» или «открой GitHub»</small></div>
+      <div class="task"><strong>🧠 Локальная память</strong><small>Сохранение работает только после твоего согласия.</small></div>
+      <hr style="border-color:#233354;margin:16px 0">
+      <h2>Память</h2>
+      <label class="memory"><input id="memoryConsent" type="checkbox"> <span>Я согласен сохранять заметки и выбранные факты в этом браузере на этом устройстве.</span></label>
+      <div class="row" style="margin-top:10px">
+        <button id="viewMemory">Показать память</button>
+        <button id="deleteMemory">Удалить память</button>
+      </div>
+      <div class="notice">Данные хранятся локально в браузере. Не сохраняй пароли, платёжные данные или секретные ключи.</div>
+    </aside>
+  </div>
+  <p class="notice">Безопасность: этот прототип не запускает команды Windows, не управляет приложениями напрямую и не отправляет сообщения сам. Открытие внешнего сайта подтверждается отдельно.</p>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

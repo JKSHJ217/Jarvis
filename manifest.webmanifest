@@ -1,0 +1,10 @@
+{
+  "name": "JARVIS Lite Personal Assistant",
+  "short_name": "JARVIS Lite",
+  "description": "Личный помощник-прототип с голосом и локальной памятью",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#070b16",
+  "theme_color": "#080e1d",
+  "lang": "ru"
+}
